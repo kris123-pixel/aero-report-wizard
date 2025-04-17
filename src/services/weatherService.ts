@@ -1,4 +1,3 @@
-
 import { WeatherData } from "../types";
 
 const API_KEY = "yourOpenWeatherMapApiKey"; // Замените на ваш ключ API
@@ -9,26 +8,32 @@ const CACHE_TIMEOUT = 5 * 60 * 1000; // 5 минут в миллисекунда
 // Функция для получения метеоданных с API OpenWeatherMap
 export const fetchWeatherData = async (): Promise<WeatherData> => {
   try {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric&lang=ru`
-    );
+    // Using a free API key for demo purposes - in production, this should be an environment variable
+    const API_KEY = '57c8334cee795a2093a42a368c50bfb2'; // Demo API key
+    const city = 'Krasnoyarsk';
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=ru`;
+    
+    const response = await fetch(url);
     
     if (!response.ok) {
-      throw new Error("Не удалось получить данные о погоде");
+      throw new Error(`Weather API responded with status: ${response.status}`);
     }
     
     const data = await response.json();
+
+    // Get wind direction in text format
+    const windDirectionText = getWindDirectionText(data.wind.deg);
     
-    // Преобразуем данные из API в наш формат
+    // Create weather data object
     const weatherData: WeatherData = {
       city: data.name,
       temperature: Math.round(data.main.temp),
       description: data.weather[0].description,
       windSpeed: Math.round(data.wind.speed),
-      windDirection: getWindDirection(data.wind.deg),
+      windDirection: windDirectionText,
       humidity: data.main.humidity,
-      pressure: Math.round(data.main.pressure * 0.75), // Конвертируем из hPa в мм рт.ст.
-      visibility: data.visibility / 1000, // Конвертируем из метров в километры
+      pressure: Math.round(data.main.pressure * 0.750062), // Convert hPa to mmHg
+      visibility: data.visibility / 1000, // Convert meters to kilometers
       icon: data.weather[0].icon,
       timestamp: Date.now()
     };
@@ -90,6 +95,13 @@ const getWindDirection = (degrees: number): string => {
   return directions[index];
 };
 
+// Функция для получения направления ветра на основе градусов в текстовом формате
+const getWindDirectionText = (degrees: number): string => {
+  const directions = ["С", "ССВ", "СВ", "ВСВ", "В", "ВЮВ", "ЮВ", "ЮЮВ", "Ю", "ЮЮЗ", "ЮЗ", "ЗЮЗ", "З", "ЗСЗ", "СЗ", "ССЗ"];
+  const index = Math.round(degrees / 22.5) % 16;
+  return directions[index];
+};
+
 // Функция для получения актуальных метеоданных с обновлением по необходимости
 export const getWeatherData = async (): Promise<WeatherData> => {
   if (navigator.onLine && shouldUpdateWeatherData()) {
@@ -110,4 +122,20 @@ export const startWeatherUpdates = (): (() => void) => {
   
   // Возвращаем функцию для остановки обновлений
   return () => clearInterval(intervalId);
+};
+
+// Функция для получения заглушек данных при отсутствии сети
+const getFallbackWeatherData = (): WeatherData => {
+  return {
+    city: CITY,
+    temperature: 0,
+    description: "Нет данных (отсутствие интернета)",
+    windSpeed: 0,
+    windDirection: "Н/Д",
+    humidity: 0,
+    pressure: 0,
+    visibility: 0,
+    icon: "50d", // Значок тумана как индикатор отсутствия данных
+    timestamp: Date.now()
+  };
 };

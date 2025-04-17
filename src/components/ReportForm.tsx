@@ -377,7 +377,7 @@ const ReportForm: React.FC<ReportFormProps> = ({
                     <SelectValue placeholder="Выберите шаблон отчета" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Не использовать шаблон</SelectItem>
+                    <SelectItem value="none">Не использовать шаблон</SelectItem>
                     {reportTemplates.map(template => (
                       <SelectItem key={template.id} value={template.id}>
                         {template.name}

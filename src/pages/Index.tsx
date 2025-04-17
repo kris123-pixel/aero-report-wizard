@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../contexts/AppContext';
 import WeatherInfo from '../components/WeatherInfo';
@@ -41,46 +40,49 @@ const Index = () => {
   const [viewingReport, setViewingReport] = useState<boolean>(false);
   const [editingReport, setEditingReport] = useState<boolean>(false);
 
-  // Обработчик для создания нового отчета
+  useEffect(() => {
+    if (!filter.sortBy) {
+      setFilter({
+        sortBy: 'date',
+        sortOrder: 'desc',
+        droneModel: '_all'
+      });
+    }
+  }, [filter, setFilter]);
+
   const handleCreateReport = () => {
     createNewReport('Новый отчет');
     setActiveTab('create');
     setEditingReport(true);
   };
 
-  // Обработчик для просмотра отчета
   const handleViewReport = async (id: string) => {
     await loadReport(id);
     setViewReportId(id);
     setViewingReport(true);
   };
 
-  // Обработчик для редактирования отчета
   const handleEditReport = () => {
     setViewingReport(false);
     setEditingReport(true);
     setActiveTab('create');
   };
 
-  // Обработчик для закрытия просмотра отчета
   const handleClosePreview = () => {
     setViewingReport(false);
     setViewReportId(null);
   };
 
-  // Обработчик для экспорта в PDF
   const handleExportToPdf = async (reportId: string) => {
     const report = reports.find(r => r.id === reportId);
     if (report) {
       try {
-        // Создаем временный div для рендеринга отчета
         const tempDiv = document.createElement('div');
         tempDiv.style.position = 'absolute';
         tempDiv.style.left = '-9999px';
         tempDiv.id = 'temp-report-container';
         document.body.appendChild(tempDiv);
         
-        // Рендерим отчет в временный div
         tempDiv.innerHTML = `
           <div id="export-report" class="bg-white p-6 max-w-4xl mx-auto">
             <div class="weather-info mb-6">
@@ -136,10 +138,8 @@ const Index = () => {
           </div>
         `;
         
-        // Генерируем PDF
         await generatePDF(report, 'export-report');
         
-        // Удаляем временный div
         document.body.removeChild(tempDiv);
       } catch (error) {
         console.error('Ошибка при экспорте в PDF:', error);
@@ -147,7 +147,6 @@ const Index = () => {
     }
   };
 
-  // Функция для рендеринга элементов формы для экспорта
   const renderFormItemsForExport = (items: any[], level: number = 0) => {
     return items.map(item => `
       <div style="margin-left: ${level * 20}px; margin-bottom: 8px;">
@@ -196,7 +195,6 @@ const Index = () => {
     `).join('');
   };
 
-  // Обработчик для экспорта в JSON
   const handleExportToJson = async (reportId: string): Promise<void> => {
     const report = reports.find(r => r.id === reportId);
     if (report) {
@@ -204,7 +202,6 @@ const Index = () => {
     }
   };
 
-  // Определение шагов для wizard
   const wizardSteps: WizardStep[] = [
     {
       id: 'step-1',
@@ -274,7 +271,6 @@ const Index = () => {
     }
   ];
 
-  // Проверка на загрузку данных
   if (loading || !weatherData) {
     return (
       <div className="flex items-center justify-center h-screen">

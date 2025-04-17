@@ -108,7 +108,7 @@ const ReportList: React.FC<ReportListProps> = ({
                   <SelectValue placeholder="Все модели" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все модели</SelectItem>
+                  <SelectItem value="_all">Все модели</SelectItem>
                   {droneTemplates.map(drone => (
                     <SelectItem key={drone.id} value={drone.model}>
                       {drone.name} ({drone.model})
