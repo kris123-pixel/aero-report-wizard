@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 215 90% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -98,4 +92,49 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Дополнительные стили для приложения отчетов БПЛА */
+.section-header {
+  @apply text-lg font-semibold mb-2 bg-primary/10 p-2 rounded;
+}
+
+.section-item {
+  @apply p-2 border border-gray-200 rounded mb-2 bg-white hover:bg-gray-50;
+}
+
+.report-container {
+  @apply bg-white p-6 rounded-lg shadow-md;
+}
+
+.drone-badge {
+  @apply bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold;
+}
+
+.weather-info {
+  @apply bg-blue-50 p-3 rounded-md mb-4 flex items-center;
+}
+
+.weather-icon {
+  @apply w-10 h-10 mr-3;
+}
+
+.draggable-item {
+  @apply cursor-grab active:cursor-grabbing;
+}
+
+.wizard-container {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50;
+}
+
+.wizard-content {
+  @apply bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full;
+}
+
+.wizard-step {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.tooltip {
+  @apply bg-gray-800 text-white p-2 rounded shadow-lg text-sm;
 }
